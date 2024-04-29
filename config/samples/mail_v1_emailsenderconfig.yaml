@@ -1,0 +1,13 @@
+apiVersion: mail.email-sender.com/v1
+kind: EmailSenderConfig
+metadata:
+  labels:
+    app.kubernetes.io/name: emailsenderconfig
+    app.kubernetes.io/instance: emailsenderconfig-sample
+    app.kubernetes.io/part-of: task-email-sender
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: task-email-sender
+  name: emailsenderconfig-sample
+spec:
+  apiToken: ""
+  senderEmail: ""

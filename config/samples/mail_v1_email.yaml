@@ -1,0 +1,15 @@
+apiVersion: mail.email-sender.com/v1
+kind: Email
+metadata:
+  labels:
+    app.kubernetes.io/name: email
+    app.kubernetes.io/instance: email-sample
+    app.kubernetes.io/part-of: task-email-sender
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: task-email-sender
+  name: email-sample
+spec:
+  senderConfigRef : emailsenderconfig-sample
+  recipientEmail: "ashehata.rm@gmail.com"
+  subject: "Hello, K8s Operator!"
+  body: "K8s Rocks!"
