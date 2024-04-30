@@ -1,91 +1,85 @@
-# task-email-sender
-// TODO(user): Add simple overview of use/purpose
 
-## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+# Email Controller
 
-## Getting Started
+## Overview
 
-### Prerequisites
-- go version v1.20.0+
-- docker version 17.03+.
-- kubectl version v1.11.3+.
-- Access to a Kubernetes v1.11.3+ cluster.
+This controller is responsible for managing Email resources within a Kubernetes cluster. It reconciles the desired state of Email objects with the actual state of the cluster, ensuring that emails are sent according to the specifications provided by the user.
 
-### To Deploy on the cluster
-**Build and push your image to the location specified by `IMG`:**
+## Creation
 
-```sh
-make docker-build docker-push IMG=<some-registry>/task-email-sender:tag
+Create the project using operator-sdk and generate apis
+
+```
+operator-sdk create api --group mail --version v1 --kind Email --resource --controller
+operator-sdk create api --group mail --version v1 --kind EmailSenderConfig --resource --controller
 ```
 
-**NOTE:** This image ought to be published in the personal registry you specified. 
-And it is required to have access to pull the image from the working environment. 
-Make sure you have the proper permission to the registry if the above commands don’t work.
 
-**Install the CRDs into the cluster:**
+## Installation
 
-```sh
+To use this controller, follow these steps:
+
+1. Install Go and set up your Go workspace.
+2. Clone the repository containing the controller code.
+3. Build the controller binary.
+4. Deploy the controller to your Kubernetes cluster.
+
+## How it Works
+
+### Reconciliation Loop
+
+The core functionality of the controller is implemented in the `Reconcile` function. This function is invoked periodically by the Kubernetes controller-runtime framework to ensure that the state of Email objects in the cluster matches the desired state.
+
+### Reconcile Function
+
+The `Reconcile` function performs the following steps:
+
+1. Fetch the Email object specified in the reconciliation request.
+2. Check if the email has already been sent. If it has, the reconciliation process is skipped.
+3. Fetch the EmailSenderConfig referenced by the Email object.
+4. Use the MailerSend API to send the email using the configuration provided by the EmailSenderConfig.
+5. Update the status of the Email object based on the result of the email sending operation.
+
+
+## Dependencies
+
+This controller depends on the following libraries:
+
+- Kubernetes controller-runtime
+- MailerSend Go SDK
+
+To install and run the controller using Operator SDK, you'll follow a set of steps including setting up your development environment, scaffolding the operator project, implementing the controller logic, building the operator image, and deploying it to your Kubernetes cluster. Here's a guide on how to do it:
+
+## MaierSend config
+Create account and generate token to be used in email config https://www.mailersend.com/
+
+## Running The Controller
+
+### Step 1: Set up your development environment
+
+Ensure you have a working Go development environment. 
+
+### Step 2: Install CRDs
+
+
+```bash
 make install
 ```
 
-**Deploy the Manager to the cluster with the image specified by `IMG`:**
+### Step 3: Deploy the Controller
 
-```sh
-make deploy IMG=<some-registry>/task-email-sender:tag
+
+```bash
+make run
 ```
 
-> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin 
-privileges or be logged in as admin.
+### Step 4: Create Sample Resources
+Update the resources in `config/samples` and apply them
 
-**Create instances of your solution**
-You can apply the samples (examples) from the config/sample:
-
-```sh
-kubectl apply -k config/samples/
+```
+kubectl apply -f config/samples/email_v1_emailsenderconfig.yaml
 ```
 
->**NOTE**: Ensure that the samples has default values to test it out.
-
-### To Uninstall
-**Delete the instances (CRs) from the cluster:**
-
-```sh
-kubectl delete -k config/samples/
 ```
-
-**Delete the APIs(CRDs) from the cluster:**
-
-```sh
-make uninstall
+ kubectl apply -f config/samples/email_v1_email.yaml
 ```
-
-**UnDeploy the controller from the cluster:**
-
-```sh
-make undeploy
-```
-
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
-
-**NOTE:** Run `make help` for more information on all potential `make` targets
-
-More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
-
-## License
-
-Copyright 2024.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
